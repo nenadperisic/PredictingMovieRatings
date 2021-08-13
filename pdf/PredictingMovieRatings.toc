@@ -1,0 +1,4 @@
+\babel@toc {serbian}{}
+\contentsline {section}{\numberline {1}Uvod}{3}{section.1}
+\contentsline {section}{\numberline {2}Zaklju\IeC {\v c}ak}{4}{section.2}
+\contentsline {section}{Literatura}{5}{section.2}
