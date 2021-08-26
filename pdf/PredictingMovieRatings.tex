@@ -100,16 +100,46 @@
 
 \section{Uvod}
 \label{sec:uvod}
-neki uvod
-\cite{skripta}
+U ovom radu ćemo pokušati da damo odgovor na pitanje da li je moguće predvideti rejting filma i proceniti njegovu uspešnost pre nego što on bude pušten u bioskopima. Ovo ćemo uraditi analiziranjem skupova multimodalnih podataka sa raznim atributima (svojstvima) kao što su režiser tog filma, glumačka ekipa, kompanija koja je radila produkciju filma, opis filma, žanr filma, poster filma itd. Mi ćemo se osvrnuti na predviđanje rejtinga na osnovu tekstualnih atributa i na njima primenjivati algoritme linearne regresije, grebene regresije, slučajne šume i neuronske mreže.
+
+
+\section{Skup podataka}
+\label{sec:skupPodataka}
+Koristićemo dva skupa podataka, "The movie dataset" \cite{movieDataset} i "Movie genre from it's poster dataset" \cite{movieGenres}, oba dostupni na Kaggle \cite{kaggle} veb sajtu. Oni sadrže metapodatke za 45000 filmova koji su objavljeni pre jula 2017. godine. Podaci se sastoje od glumačke ekipe (cast), celokupne ekipe (crew), ključnih reči radnje, budžeta, prihoda, postera, datuma objavljivanja, jezika, produkcijskih kuća, država, broja glasova i njihovog proseka.\\
+
+Skup podataka je organizovan na sledeći način:
+\begin{itemize}
+	\item \textit{movies\_metadata.csv} - glavna datoteka metapodataka o filmovima
+	\item \textit{keywords.csv} - sadrži ključne reči filmskog zapleta dostupog u formi JSON objekta
+	\item \textit{credits.csv} - sastoji se od glumačke ekipe takođe u formi JSON objekta
+	\item \textit{links.csv} - sadrži TMDB i IMDB id-ove svih filmova
+	\item \textit{ratings\_small.csv} - sadrži rejtinge od 100 000 rejtinga koji su prikupljeni od 700 korisnika na 9000 filmova
+	\item \textit{movie\_genre.csv} - sadrži žanrove filmova koje ćemo spajati preko imdb\_id-a, a koja takođe sadrži i link do postera filma
+\end{itemize}
+
+
+\section{Preprocesiranje}
+\label{sec:preprocesiranje}
+
+Za ulazne parametre posmatraćemo atribute cast, crew, synopses, genre i runtime, a IMDB Score ćemo uzeti za cilj predvidjanja. Iz kolona cast i crew ćemo da izdvojimo dva glavna glumca, režisera i produkcijsku kuću za svaki film ali tako da su se pojavljivali u barem 5 filmova kako nam se ne bi narušilo predviđanje ukoliko je neko imao samo jedan film u svojoj karijeri. Takođe, zarad boljih rezultata možemo uzeti samo filmove koji su prvi put prikazani posle 1970. godine i čiji je originalni jezik engleski.
+
+
+Podelu skupa podataka na trening, test i validacioni skup ćemo izvršiti u odnosu 70\%:15\%:15\%.\\
+
+
+
+
+\section{Modeli}
+\label{sec:modeli}
+
+
+
 
 \pagebreak
 
 \section{Zaključak}
 \label{sec:zakljucak}
-U ovom radu smo prikazali neke od tehnika i alata koje se mogu upotrebiti pri klasterovanju ovako 
-velikog skupa podataka. Zaključak koji možemo da izvedemo jeste taj da se alat CLUTO pokazao kao najbolje sredstvo za klasterovanje ovakvih vrsta podataka. Ostale metode nisu dale dobre rezulate. Napomenimo i to da smo prilikom klasterovanja ćelija uglavnom dobijali bolje rezultate u odnosu na klasterovanje gena.
-
+zakljucak
 
 
 \pagebreak
@@ -117,7 +147,7 @@ velikog skupa podataka. Zaključak koji možemo da izvedemo jeste taj da se alat
 \addcontentsline{toc}{section}{Literatura}
 \appendix
 \bibliography{reference}
-\bibliographystyle{plain}
+\bibliographystyle{ieeetr}
 \appendix
 
 \end{document}

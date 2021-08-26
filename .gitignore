@@ -1,0 +1,9 @@
+pdf/*.out
+pdf/*.toc
+pdf/*.log
+pdf/*.aux
+pdf/*.bbl
+pdf/*.blg
+pdf/*.bcf
+pdf/*.xml
+pdf/*.gz
