@@ -121,10 +121,13 @@ Skup podataka je organizovan na sledeći način:
 \section{Preprocesiranje}
 \label{sec:preprocesiranje}
 
-Za ulazne parametre posmatraćemo atribute cast, crew, synopses, genre i runtime, a IMDB Score ćemo uzeti za cilj predvidjanja. Iz kolona cast i crew ćemo da izdvojimo dva glavna glumca, režisera i produkcijsku kuću za svaki film ali tako da su se pojavljivali u barem 5 filmova kako nam se ne bi narušilo predviđanje ukoliko je neko imao samo jedan film u svojoj karijeri. Takođe, zarad boljih rezultata možemo uzeti samo filmove koji su prvi put prikazani posle 1970. godine i čiji je originalni jezik engleski.
+Nakon spajanja svih navedenih tabela, uklonićemo kolone koje se ponavljaju, a to su: \textit{Title}, \textit{Original title}. Zatim uklanjamo još i kolone \textit{Poster} - link do postera filma, \textit{homepage} - link do stranice filma, \textit{belongs\_to\_collection}.\\
+
+Za ulazne parametre posmatraćemo atribute cast, crew, synopses, genre i runtime, a IMDB Score ćemo uzeti za cilj predvidjanja. Iz kolona cast i crew ćemo da izdvojimo dva glavna glumca, režisera i produkcijsku kuću za svaki film ali tako da su se pojavljivali u barem 5 filmova kako nam se ne bi narušilo predviđanje ukoliko je neko imao samo jedan film u svojoj karijeri. Takođe, zarad boljih rezultata možemo uzeti samo filmove koji su prvi put prikazani posle 1970. godine i čiji je originalni jezik engleski.\\
 
 
-Podelu skupa podataka na trening, test i validacioni skup ćemo izvršiti u odnosu 70\%:15\%:15\%.\\
+
+Podelu podataka na trening i test skup ćemo izvršiti u odnosu 70\%:30\%.\\
 
 
 
