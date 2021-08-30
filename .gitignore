@@ -6,4 +6,5 @@ pdf/*.bbl
 pdf/*.blg
 pdf/*.bcf
 pdf/*.xml
+pdf/*.dvi
 pdf/*.gz
