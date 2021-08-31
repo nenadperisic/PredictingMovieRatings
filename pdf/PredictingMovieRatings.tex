@@ -100,12 +100,12 @@
 
 \section{Uvod}
 \label{sec:uvod}
-U ovom radu ćemo pokušati da damo odgovor na pitanje da li je moguće predvideti rejting filma i proceniti njegovu uspešnost pre nego što on bude pušten u bioskopima. Ovo ćemo uraditi analiziranjem skupova multimodalnih podataka sa raznim atributima (svojstvima) kao što su režiser tog filma, glumačka ekipa, kompanija koja je radila produkciju filma, opis filma, žanr filma, poster filma itd. Mi ćemo se osvrnuti na predviđanje rejtinga na osnovu tekstualnih atributa i na njima primenjivati algoritme linearne regresije, grebene regresije, slučajne šume i neuronske mreže.
+U ovom radu ću pokušati da dam odgovor na pitanje da li je moguće predvideti rejting filma i proceniti njegovu uspešnost pre nego što on bude pušten u bioskopima. Ovo ću uraditi analiziranjem skupova multimodalnih podataka sa raznim atributima (svojstvima) kao što su režiser tog filma, glumačka ekipa, produkcijska kuća, opis filma, žanr filma, poster filma, budžet, vreme trajanja filma itd. Fokus će biti predviđanje rejtinga na osnovu tekstualnih atributa i primene algoritama linearne regresije, grebene regresije, slučajnih šuma na njima.
 
 
 \section{Skup podataka}
 \label{sec:skupPodataka}
-Koristićemo dva skupa podataka, "The movie dataset" \cite{movieDataset} i "Movie genre from it's poster dataset" \cite{movieGenres}, oba dostupni na Kaggle \cite{kaggle} veb sajtu. Oni sadrže metapodatke za 45000 filmova koji su objavljeni pre jula 2017. godine. Podaci se sastoje od glumačke ekipe (cast), celokupne ekipe (crew), ključnih reči radnje, budžeta, prihoda, postera, datuma objavljivanja, jezika, produkcijskih kuća, država, broja glasova i njihovog proseka.\\
+Koriste se dva skupa podataka, "The movie dataset" \cite{movieDataset} i "Movie genre from its poster dataset" \cite{movieGenres}, oba dostupni na Kaggle \cite{kaggle} veb sajtu. Oni sadrže metapodatke za 45000 filmova koji su objavljeni pre jula 2017. godine. Podaci se sastoje od glumačke ekipe (cast), celokupne ekipe (crew), ključnih reči radnje, budžeta, prihoda, postera, datuma objavljivanja, jezika, produkcijskih kuća, država, broja glasova i njihovog proseka.\\
 
 Skup podataka je organizovan na sledeći način:
 \begin{itemize}
@@ -123,20 +123,100 @@ Skup podataka je organizovan na sledeći način:
 
 Nakon spajanja svih navedenih tabela, uklonićemo kolone koje se ponavljaju, a to su: \textit{Title}, \textit{Original title}. Zatim uklanjamo još i kolone \textit{Poster} - link do postera filma, \textit{homepage} - link do stranice filma, \textit{belongs\_to\_collection}.\\
 
-Za ulazne parametre posmatraćemo atribute cast, crew, synopses, genre i runtime, a IMDB Score ćemo uzeti za cilj predvidjanja. Iz kolona cast i crew ćemo da izdvojimo dva glavna glumca, režisera i produkcijsku kuću za svaki film ali tako da su se pojavljivali u barem 5 filmova kako nam se ne bi narušilo predviđanje ukoliko je neko imao samo jedan film u svojoj karijeri. Takođe, zarad boljih rezultata možemo uzeti samo filmove koji su prvi put prikazani posle 1970. godine i čiji je originalni jezik engleski.\\
+Za ulazne parametre posmatraćemo atribute cast, crew, synopses, genre i runtime, a IMDB Score ćemo uzeti za cilj predvidjanja. Iz kolona cast i crew ćemo da izdvojimo dva glavna glumca, režisera i prve dve produkcijske kuće za svaki film ali tako da su se pojavljivali u barem 5 filmova kako nam se ne bi narušilo predviđanje ukoliko je neko imao samo jedan film u svojoj karijeri. Takođe, zarad boljih rezultata možemo uzeti samo filmove koji su prvi put prikazani posle 1970. godine i čiji je originalni jezik engleski.\\
+
+Nakon izdvajanja potrebnih atributa iz JSON formata uradićemo binarizaciju nad atributima \textit{Genre}, \textit{actors} i \textit{companies} koje smo izdvojili.
+Što se tiče kolone \textit{overview} (synopses) koristićemo biblioteku \textit{spacy} \cite{spacy} za tokenizaciju i ostavićemo samo reči koje se javljaju u bar 20 filmova.\\
+
+Podela podataka na trening i test skup je izvršena u odnosu 70\%:30\%.\\
+
+\section{Vizuelizacija podataka}
+\label{sec:vizuelizacija}
+U ovoj sekciji će na grafički način biti prikazana zavisnost budžeta, vremena trajanja filma i raznih žanrova od rejtinga filma. Vizuelizacija je urađena nakon preprocesiranja i izdvajanja određenih atributa iz JSON formata. Na slici \ref{fig:horror} se može videti da filmovi čiji je žanr \textit{horror} imaju nešto manji rejting od onih koji imaju drugi žanr. Na slici  \ref{fig:documentary} možemo videti da filmovi čiji je žanr \textit{documentary} u znatno većem broju imaju viši rejting. Dakle kolonu \textit{genre} treba uzeti u razmatranje prilikom treniranja modela.
 
 
+\begin{figure}[h!]
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[scale=0.4]{horror.png}
+  \caption{Genre: Horror}{}
+  \label{fig:horror}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+%  \includegraphics[width=.8\linewidth]{documentary.png}
+  \includegraphics[scale=0.4]{documentary.png}
+   \caption{Genre: documentary}{}
+  \label{fig:documentary}
+\end{minipage}
+\end{figure}
 
-Podelu podataka na trening i test skup ćemo izvršiti u odnosu 70\%:30\%.\\
+Pokušajmo sada isto sa budžetom. Na slici \ref{fig:budget} se može zaključiti da ima nešto više filmova koji imaju budžet preko 5 miliona dolara, ali da njihov rejting nije nužno viši u odnosu na filmove sa manjim budžetom.
 
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.5]{budget.png}
+\caption{Budget}
+\label{fig:budget}
+\end{center}
+\end{figure}
 
+Na kraju možemo da pogledamo još i dužinu trajanja filma u odnosu na rejting. Na slici \ref{fig:runtime} možemo videti da filmovi koji traju duže od 2 sata imaju bolji rejting u odnosu na one čija je dužina kraća od 2 sata pa ćemo i tu kolonu kasnije uzeti u razmatranje za treniranje modela.
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.5]{runtime.png}
+\caption{Runtime}
+\label{fig:runtime}
+\end{center}
+\end{figure}
 
 
 \section{Modeli}
 \label{sec:modeli}
+U ovoj sekciji ćemo kreirati regresione modele nad preprocesiranim podacima i evaluirati pomoću kvadratne greške (\textbf{${R}^2$}), srednje apsolutne (\textbf{MAE}) i srednje kvadratne greške (\textbf{MSE}).
+Modeli koji ce biti trenirani nad podacima su:
+\begin{itemize}
+	\item Linear Regression
+	\item Ridge Regression
+	\item Lasso Regression
+	\item Random Forest Regression
+	\item Extreme Gradient Boosting
+\end{itemize}
 
+Kao što smo mogli da vidimo na graficima bitni atributi koji će biti od značaja za treniranje modela su: \textit{Genre, actors, director, companies, overview}, a ciljna promenljiva je \textit{IMDB Score}. Nakon završenog preprocesiranja i podele skupa na trening i test možemo da krenemo sa treniranjem modela nad tim podacima.
 
+\subsection{Linearna regresija}
+\label{sec:linearna_1}
+Rezultati linearne regresijena trening i test skupu sa \textit{default} parametrima se mogu videti u tabeli \ref{table:table_1}.
 
+\begin{table}[h!]
+\caption{Errors}
+\centering % used for centering table
+\begin{tabular}{c c c c} % centered columns (4 columns)
+\hline\hline %inserts double horizontal lines
+ & ${R}^2$ & MAE & MSE \\ [0.2ex] % inserts table
+%heading
+\hline % inserts single horizontal line
+train & 0.5469532634174328 & 0.6031675024259086 & 0.6228400675303715 \\ % inserting body of the table
+test & 0.3615194589066031 & 0.7248295216204385 & 0.874435134094227 \\ [1ex] % [1ex] adds vertical space
+\end{tabular}
+\label{table:table_1}
+\end{table}
+
+Nakon toga, da bismo dobili što bolje vrednosti za greške, napravićemo nekoliko modela sa različitim parametrima korišćenjem GridSearchCV metoda\cite{gridSearchCV}.
+
+\subsection{Grebena regresija}
+\label{sec:ridge_1}
+
+\subsection{Lasso regresija}
+\label{sec:lasso_1}
+
+\subsection{Slučajne šume}
+\label{sec:randomForest_1}
+
+\subsection{Extreme gradient boosting}
+\label{sec:xgBoost_1}
 
 \pagebreak
 
